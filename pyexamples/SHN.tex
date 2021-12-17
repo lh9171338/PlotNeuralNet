@@ -1,0 +1,624 @@
+
+\documentclass[border=8pt, multi, tikz]{standalone} 
+\usepackage{import}
+\subimport{../layers/}{init}
+\usetikzlibrary{positioning}
+\usetikzlibrary{3d} %for including external image 
+
+\def\FeatureColor{rgb:green,4;black,5}
+\def\ConvColor{rgb:yellow,5;red,2.5;white,5}
+\def\ConvReluColor{rgb:yellow,5;red,5;white,5}
+\def\ConvResColor{rgb:magenta,4;black,5}
+\def\PoolColor{rgb:red,1;black,0.3}
+\def\UnpoolColor{rgb:blue,2;green,1;black,0.3}
+\def\FcColor{rgb:blue,5;red,2.5;white,5}
+\def\FcReluColor{rgb:blue,5;red,5;white,4}
+\def\SoftmaxColor{rgb:magenta,5;black,7}   
+\def\SumColor{rgb:blue,5;green,15}
+\def\ConcatColor{rgb:blue,5;red,2.5;white,5}
+
+\newcommand{\copymidarrow}{\tikz \draw[-Stealth,line width=0.8mm,draw={rgb:blue,4;red,1;green,1;black,3}] (-0.3,0) -- ++(0.3,0);}
+
+\begin{document}
+\begin{tikzpicture}
+\tikzstyle{connection}=[ultra thick,every node/.style={sloped,allow upside down},draw=\edgecolor,opacity=0.7]
+\tikzstyle{copyconnection}=[ultra thick,every node/.style={sloped,allow upside down},draw={rgb:blue,4;red,1;green,1;black,3},opacity=0.7]
+
+\pic[shift={(30, 10, 0)}] at (0, 0, 0) 
+    {Box={
+        name=conv,
+        caption=Conv,
+        xlabel={{, }},
+        zlabel=,
+        fill=\ConvColor,
+        height=8,
+        width=4,
+        depth=8
+        }
+    };
+
+\pic[shift={ (1, 0, 0) }] at (conv-east) 
+    {Box={
+        name=res,
+        caption=Residual block,
+        xlabel={{ , }},
+        zlabel=,
+        fill=\ConvResColor,
+        opacity=0.5,
+        height=8,
+        width=4,
+        depth=8
+        }
+    };
+
+\pic[shift={ (1, 0, 0) }] at (res-east) 
+    {Box={
+        name=maxpool,
+        caption=MaxPool,
+        fill=\PoolColor,
+        opacity=0.5,
+        height=8,
+        width=4,
+        depth=8
+        }
+    };
+
+\pic[shift={ (1, 0, 0) }] at (maxpool-east) 
+    {Box={
+        name=upsample,
+        caption=Up sampling,
+        fill=\UnpoolColor,
+        opacity=0.5,
+        height=8,
+        width=4,
+        depth=8
+        }
+    };
+
+\pic[shift={(0, 0, 0)}] at (0, 0, 0) 
+    {Box={
+        name=input,
+        caption=Input,
+        xlabel={{3, }},
+        zlabel=512,
+        fill=\FeatureColor,
+        height=64,
+        width=0.5,
+        depth=64
+        }
+    };
+
+\pic[shift={(1, 0, 0)}] at (input-east) 
+    {RightBandedBox={
+        name=conv1,
+        caption= ,
+        xlabel={{64, }},
+        zlabel=256,
+        fill=\ConvColor,
+        bandfill=\ConvReluColor,
+        height=32,
+        width=1,
+        depth=32
+        }
+    };
+
+\pic[shift={ (1, 0, 0) }] at (conv1-east) 
+    {Box={
+        name=layer1,
+        caption= ,
+        xlabel={{ 128, }},
+        zlabel=256,
+        fill=\ConvResColor,
+        opacity=0.5,
+        height=32,
+        width=2,
+        depth=32
+        }
+    };
+
+\pic[shift={ (1, 0, 0) }] at (layer1-east) 
+    {Box={
+        name=maxpool,
+        caption= ,
+        fill=\PoolColor,
+        opacity=0.5,
+        height=16,
+        width=1,
+        depth=16
+        }
+    };
+
+\pic[shift={ (0, 0, 0) }] at (maxpool-east) 
+    {Box={
+        name=layer2,
+        caption= ,
+        xlabel={{ 256, }},
+        zlabel=128,
+        fill=\ConvResColor,
+        opacity=0.5,
+        height=16,
+        width=4,
+        depth=16
+        }
+    };
+
+\pic[shift={ (1, 0, 0) }] at (layer2-east) 
+    {Box={
+        name=layer3,
+        caption= ,
+        xlabel={{ 256, }},
+        zlabel=128,
+        fill=\ConvResColor,
+        opacity=0.5,
+        height=16,
+        width=4,
+        depth=16
+        }
+    };
+
+\pic[shift={ (1.5, 0, 0) }] at (layer3-east) 
+    {Box={
+        name=maxpool_encoder1,
+        caption= ,
+        fill=\PoolColor,
+        opacity=0.5,
+        height=8,
+        width=1,
+        depth=8
+        }
+    };
+
+\pic[shift={ (0, 0, 0) }] at (maxpool_encoder1-east) 
+    {Box={
+        name=res_encoder1,
+        caption= ,
+        xlabel={{ 256, }},
+        zlabel=64,
+        fill=\ConvResColor,
+        opacity=0.5,
+        height=8,
+        width=4,
+        depth=8
+        }
+    };
+
+\pic[shift={ (1.2, 0, 0) }] at (res_encoder1-east) 
+    {Box={
+        name=maxpool_encoder2,
+        caption= ,
+        fill=\PoolColor,
+        opacity=0.5,
+        height=4,
+        width=1,
+        depth=4
+        }
+    };
+
+\pic[shift={ (0, 0, 0) }] at (maxpool_encoder2-east) 
+    {Box={
+        name=res_encoder2,
+        caption= ,
+        xlabel={{ 256, }},
+        zlabel=32,
+        fill=\ConvResColor,
+        opacity=0.5,
+        height=4,
+        width=4,
+        depth=4
+        }
+    };
+
+\pic[shift={ (1, 0, 0) }] at (res_encoder2-east) 
+    {Box={
+        name=maxpool_encoder3,
+        caption= ,
+        fill=\PoolColor,
+        opacity=0.5,
+        height=2,
+        width=1,
+        depth=2
+        }
+    };
+
+\pic[shift={ (0, 0, 0) }] at (maxpool_encoder3-east) 
+    {Box={
+        name=res_encoder3,
+        caption= ,
+        xlabel={{ 256, }},
+        zlabel=16,
+        fill=\ConvResColor,
+        opacity=0.5,
+        height=2,
+        width=4,
+        depth=2
+        }
+    };
+
+\pic[shift={ (0.75, 0, 0) }] at (res_encoder3-east) 
+    {Box={
+        name=maxpool_encoder4,
+        caption= ,
+        fill=\PoolColor,
+        opacity=0.5,
+        height=1,
+        width=1,
+        depth=1
+        }
+    };
+
+\pic[shift={ (0, 0, 0) }] at (maxpool_encoder4-east) 
+    {Box={
+        name=res_encoder4,
+        caption= ,
+        xlabel={{ 256, }},
+        zlabel=8,
+        fill=\ConvResColor,
+        opacity=0.5,
+        height=1,
+        width=4,
+        depth=1
+        }
+    };
+
+\pic[shift={ (0.5, 9, 0) }] at (res_encoder4-east) 
+    {Box={
+        name=res_shortcut1,
+        caption= ,
+        xlabel={{ 256, }},
+        zlabel=128,
+        fill=\ConvResColor,
+        opacity=0.5,
+        height=16,
+        width=4,
+        depth=16
+        }
+    };
+
+\pic[shift={ (0.5, 5, 0) }] at (res_encoder4-east) 
+    {Box={
+        name=res_shortcut2,
+        caption= ,
+        xlabel={{ 256, }},
+        zlabel=64,
+        fill=\ConvResColor,
+        opacity=0.5,
+        height=8,
+        width=4,
+        depth=8
+        }
+    };
+
+\pic[shift={ (0.5, 2.5, 0) }] at (res_encoder4-east) 
+    {Box={
+        name=res_shortcut3,
+        caption= ,
+        xlabel={{ 256, }},
+        zlabel=32,
+        fill=\ConvResColor,
+        opacity=0.5,
+        height=4,
+        width=4,
+        depth=4
+        }
+    };
+
+\pic[shift={ (0.5, 1, 0) }] at (res_encoder4-east) 
+    {Box={
+        name=res_shortcut4,
+        caption= ,
+        xlabel={{ 256, }},
+        zlabel=16,
+        fill=\ConvResColor,
+        opacity=0.5,
+        height=2,
+        width=4,
+        depth=2
+        }
+    };
+
+\pic[shift={ (0.5, 0, 0) }] at (res_encoder4-east) 
+    {Box={
+        name=res_shortcut5,
+        caption= ,
+        xlabel={{ 256, }},
+        zlabel=8,
+        fill=\ConvResColor,
+        opacity=0.5,
+        height=1,
+        width=4,
+        depth=1
+        }
+    };
+
+\pic[shift={ (0.5, 0, 0) }] at (res_shortcut5-east) 
+    {Box={
+        name=res_decoder4,
+        caption= ,
+        xlabel={{ 256, }},
+        zlabel=8,
+        fill=\ConvResColor,
+        opacity=0.5,
+        height=1,
+        width=4,
+        depth=1
+        }
+    };
+
+\pic[shift={ (0, 0, 0) }] at (res_decoder4-east) 
+    {Box={
+        name=upsample_decoder4,
+        caption= ,
+        fill=\UnpoolColor,
+        opacity=0.5,
+        height=2,
+        width=1,
+        depth=2
+        }
+    };
+
+\pic[shift={(0.5, 0, 0)}] at (upsample_decoder4-east) 
+    {Ball={
+        name=sum_decoder4,
+        fill=\SumColor,
+        opacity=0.6,
+        radius=1.5,
+        logo=$+$
+        }
+    };
+
+        \draw [connection]  (upsample_decoder4-east)    -- node {\midarrow} (sum_decoder4-west);
+        
+\pic[shift={ (0.75, 0, 0) }] at (sum_decoder4-east) 
+    {Box={
+        name=res_decoder3,
+        caption= ,
+        xlabel={{ 256, }},
+        zlabel=16,
+        fill=\ConvResColor,
+        opacity=0.5,
+        height=2,
+        width=4,
+        depth=2
+        }
+    };
+
+\pic[shift={ (0, 0, 0) }] at (res_decoder3-east) 
+    {Box={
+        name=upsample_decoder3,
+        caption= ,
+        fill=\UnpoolColor,
+        opacity=0.5,
+        height=4,
+        width=1,
+        depth=4
+        }
+    };
+
+\pic[shift={(0.75, 0, 0)}] at (upsample_decoder3-east) 
+    {Ball={
+        name=sum_decoder3,
+        fill=\SumColor,
+        opacity=0.6,
+        radius=1.5,
+        logo=$+$
+        }
+    };
+
+        \draw [connection]  (upsample_decoder3-east)    -- node {\midarrow} (sum_decoder3-west);
+        
+\pic[shift={ (1, 0, 0) }] at (sum_decoder3-east) 
+    {Box={
+        name=res_decoder2,
+        caption= ,
+        xlabel={{ 256, }},
+        zlabel=32,
+        fill=\ConvResColor,
+        opacity=0.5,
+        height=4,
+        width=4,
+        depth=4
+        }
+    };
+
+\pic[shift={ (0, 0, 0) }] at (res_decoder2-east) 
+    {Box={
+        name=upsample_decoder2,
+        caption= ,
+        fill=\UnpoolColor,
+        opacity=0.5,
+        height=8,
+        width=1,
+        depth=8
+        }
+    };
+
+\pic[shift={(1, 0, 0)}] at (upsample_decoder2-east) 
+    {Ball={
+        name=sum_decoder2,
+        fill=\SumColor,
+        opacity=0.6,
+        radius=1.5,
+        logo=$+$
+        }
+    };
+
+        \draw [connection]  (upsample_decoder2-east)    -- node {\midarrow} (sum_decoder2-west);
+        
+\pic[shift={ (1.2, 0, 0) }] at (sum_decoder2-east) 
+    {Box={
+        name=res_decoder1,
+        caption= ,
+        xlabel={{ 256, }},
+        zlabel=64,
+        fill=\ConvResColor,
+        opacity=0.5,
+        height=8,
+        width=4,
+        depth=8
+        }
+    };
+
+\pic[shift={ (0, 0, 0) }] at (res_decoder1-east) 
+    {Box={
+        name=upsample_decoder1,
+        caption= ,
+        fill=\UnpoolColor,
+        opacity=0.5,
+        height=16,
+        width=1,
+        depth=16
+        }
+    };
+
+\pic[shift={(1.2, 0, 0)}] at (upsample_decoder1-east) 
+    {Ball={
+        name=sum_decoder1,
+        fill=\SumColor,
+        opacity=0.6,
+        radius=1.5,
+        logo=$+$
+        }
+    };
+
+        \draw [connection]  (upsample_decoder1-east)    -- node {\midarrow} (sum_decoder1-west);
+        
+\pic[shift={ (1, 0, 0) }] at (sum_decoder1-east) 
+    {Box={
+        name=layer4,
+        caption= ,
+        xlabel={{ 256, }},
+        zlabel=128,
+        fill=\ConvResColor,
+        opacity=0.5,
+        height=16,
+        width=4,
+        depth=16
+        }
+    };
+
+\pic[shift={(1, 0, 0)}] at (layer4-east) 
+    {RightBandedBox={
+        name=conv2,
+        caption= ,
+        xlabel={{256, }},
+        zlabel=128,
+        fill=\ConvColor,
+        bandfill=\ConvReluColor,
+        height=16,
+        width=4,
+        depth=16
+        }
+    };
+
+\pic[shift={(1, 0, 0)}] at (conv2-east) 
+    {Box={
+        name=conv3,
+        caption= ,
+        xlabel={{256, }},
+        zlabel=128,
+        fill=\ConvColor,
+        height=16,
+        width=4,
+        depth=16
+        }
+    };
+
+\pic[shift={(1, 0, 0)}] at (conv3-east) 
+    {Ball={
+        name=sum1,
+        fill=\SumColor,
+        opacity=0.6,
+        radius=1.5,
+        logo=$+$
+        }
+    };
+
+\pic[shift={(1, 0, 0)}] at (sum1-east) 
+    {Box={
+        name=feature,
+        caption=Feature,
+        xlabel={{256, }},
+        zlabel=128,
+        fill=\FeatureColor,
+        height=16,
+        width=4,
+        depth=16
+        }
+    };
+
+        \draw [connection]  (input-east)    -- node {\midarrow} (conv1-west);
+        
+        \draw [connection]  (conv1-east)    -- node {\midarrow} (layer1-west);
+        
+        \draw [connection]  (layer1-east)    -- node {\midarrow} (maxpool-west);
+        
+        \draw [connection]  (layer2-east)    -- node {\midarrow} (layer3-west);
+        
+        \draw [connection]  (layer3-east)    -- node {\midarrow} (maxpool_encoder1-west);
+        
+        \draw [connection]  (res_encoder1-east)    -- node {\midarrow} (maxpool_encoder2-west);
+        
+        \draw [connection]  (res_encoder2-east)    -- node {\midarrow} (maxpool_encoder3-west);
+        
+        \draw [connection]  (res_encoder3-east)    -- node {\midarrow} (maxpool_encoder4-west);
+        
+        \draw [connection]  (res_encoder4-east)    -- node {\midarrow} (res_shortcut5-west);
+        
+        \draw [connection]  (res_shortcut5-east)    -- node {\midarrow} (res_decoder4-west);
+        
+        \draw [connection]  (sum_decoder4-east)    -- node {\midarrow} (res_decoder3-west);
+        
+        \draw [connection]  (sum_decoder3-east)    -- node {\midarrow} (res_decoder2-west);
+        
+        \draw [connection]  (sum_decoder2-east)    -- node {\midarrow} (res_decoder1-west);
+        
+        \draw [connection]  (sum_decoder1-east)    -- node {\midarrow} (layer4-west);
+        
+        \draw [connection]  (layer4-east)    -- node {\midarrow} (conv2-west);
+        
+        \draw [connection]  (conv2-east)    -- node {\midarrow} (conv3-west);
+        
+        \draw [connection]  (conv3-east)    -- node {\midarrow} (sum1-west);
+        
+\path (layer3-northeast) -- (layer3-southeast) coordinate[pos=2] (layer3-down) ;
+\draw [copyconnection]  (layer3-southeast)  
+-- node {\copymidarrow} (layer3-down)
+-- node {\copymidarrow} (layer3-down-|sum1-south)
+-- node {\copymidarrow} (sum1-south);
+
+        \draw [connection]  (sum1-east)    -- node {\midarrow} (feature-west);
+        
+\draw [copyconnection]  (layer3-northeast)  
+-- node {\copymidarrow} (res_shortcut1-west-|layer3-east)
+-- node {\copymidarrow} (res_shortcut1-west);
+
+\draw [copyconnection]  (res_shortcut1-east)  
+-- node {\copymidarrow} (res_shortcut1-east-|sum_decoder1-north)
+-- node {\copymidarrow} (sum_decoder1-north);
+
+\draw [copyconnection]  (res_encoder1-northeast)  
+-- node {\copymidarrow} (res_shortcut2-west-|res_encoder1-east)
+-- node {\copymidarrow} (res_shortcut2-west);
+
+\draw [copyconnection]  (res_shortcut2-east)  
+-- node {\copymidarrow} (res_shortcut2-east-|sum_decoder2-north)
+-- node {\copymidarrow} (sum_decoder2-north);
+
+\draw [copyconnection]  (res_encoder2-northeast)  
+-- node {\copymidarrow} (res_shortcut3-west-|res_encoder2-east)
+-- node {\copymidarrow} (res_shortcut3-west);
+
+\draw [copyconnection]  (res_shortcut3-east)  
+-- node {\copymidarrow} (res_shortcut3-east-|sum_decoder3-north)
+-- node {\copymidarrow} (sum_decoder3-north);
+
+\draw [copyconnection]  (res_encoder3-northeast)  
+-- node {\copymidarrow} (res_shortcut4-west-|res_encoder3-east)
+-- node {\copymidarrow} (res_shortcut4-west);
+
+\draw [copyconnection]  (res_shortcut4-east)  
+-- node {\copymidarrow} (res_shortcut4-east-|sum_decoder4-north)
+-- node {\copymidarrow} (sum_decoder4-north);
+
+\end{tikzpicture}
+\end{document}
