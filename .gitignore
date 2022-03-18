@@ -1,6 +1,7 @@
 *.aux
 *.log
 *.gz
+.idea/
 
 __pycache__
 books

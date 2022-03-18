@@ -15,12 +15,15 @@ def to_cor():
     return r"""
 \def\FeatureColor{rgb:green,4;black,5}
 \def\ConvColor{rgb:yellow,5;red,2.5;white,5}
+\def\FcColor{rgb:blue,5;red,2.5;white,5}
+\def\ReluColor{rgb:red,1;black,0.3}
+\def\BnColor{rgb:blue,2;green,1;black,0.3}
+\def\FcReluColor{rgb:blue,5;red,5;white,4}
 \def\ConvReluColor{rgb:yellow,5;red,5;white,5}
 \def\ConvResColor{rgb:magenta,4;black,5}
 \def\PoolColor{rgb:red,1;black,0.3}
 \def\UnpoolColor{rgb:blue,2;green,1;black,0.3}
-\def\FcColor{rgb:blue,5;red,2.5;white,5}
-\def\FcReluColor{rgb:blue,5;red,5;white,4}
+\def\SigmoidColor{rgb:magenta,5;black,7}   
 \def\SoftmaxColor{rgb:magenta,5;black,7}   
 \def\SumColor{rgb:blue,5;green,15}
 \def\ConcatColor{rgb:blue,5;red,2.5;white,5}
@@ -45,15 +48,102 @@ def to_input(pathfile, to='(-3,0,0)', width=8, height=8, name="temp"):
 
 
 # Feature map
-def to_Feature(name, s_filer=256, n_filer=64, offset="(0,0,0)", to="(0,0,0)", width=1, height=40, depth=40, caption=" "):
+def to_Feature1d(name, dim=64, offset="(0,0,0)", to="(0,0,0)", width=1, height=1, depth=40, caption=" "):
     return r"""
 \pic[shift={"""+ offset +"""}] at """+ to +""" 
     {Box={
         name=""" + name +""",
         caption="""+ caption +r""",
-        xlabel={{"""+ str(n_filer) +""", }},
+        zlabel="""+ str(dim) +""",
+        fill=\FeatureColor,
+        height="""+ str(height) +""",
+        width="""+ str(width) +""",
+        depth="""+ str(depth) +"""
+        }
+    };
+"""
+
+
+# Feature map
+def to_Feature2d(name, s_filer=256, n_filer=64, offset="(0,0,0)", to="(0,0,0)", width=1, height=40, depth=40, caption=" "):
+    return r"""
+\pic[shift={"""+ offset +"""}] at """+ to +""" 
+    {Box={
+        name=""" + name +""",
+        caption="""+ caption +r""",
+        xlabel="""+ str(n_filer) +""",
         zlabel="""+ str(s_filer) +""",
         fill=\FeatureColor,
+        height="""+ str(height) +""",
+        width="""+ str(width) +""",
+        depth="""+ str(depth) +"""
+        }
+    };
+"""
+
+
+# Fc
+def to_Fc(name, dim=256, offset="(0,0,0)", to="(0,0,0)", width=1, height=1, depth=40, caption=" "):
+    return r"""
+\pic[shift={"""+ offset +"""}] at """+ to +""" 
+    {Box={
+        name=""" + name +""",
+        caption="""+ caption +r""",
+        zlabel="""+ str(dim) +""",
+        fill=\FcColor,
+        height="""+ str(height) +""",
+        width="""+ str(width) +""",
+        depth="""+ str(depth) +"""
+        }
+    };
+"""
+
+
+# Relu
+def to_Relu(name, offset="(0,0,0)", to="(0,0,0)", width=1, height=1, depth=40, opacity=0.5, caption=" "):
+    return r"""
+\pic[shift={ """+ offset +""" }] at """+ to +"""
+    {Box={
+        name="""+name+""",
+        caption="""+ caption +r""",
+        fill=\ReluColor,
+        opacity="""+ str(opacity) +""",
+        height="""+ str(height) +""",
+        width="""+ str(width) +""",
+        depth="""+ str(depth) +"""
+        }
+    };
+"""
+
+
+# Sigmoid
+def to_Sigmoid1d(name, dim=10, offset="(0,0,0)", to="(0,0,0)", width=1, height=1, depth=3, opacity=0.8, caption=" "):
+    return r"""
+\pic[shift={"""+ offset +"""}] at """+ to +""" 
+    {Box={
+        name=""" + name +""",
+        caption="""+ caption +""",
+        xlabel={{" ","dummy"}},
+        zlabel="""+ str(dim) +""",
+        fill=\SigmoidColor,
+        opacity="""+ str(opacity) +""",
+        height="""+ str(height) +""",
+        width="""+ str(width) +""",
+        depth="""+ str(depth) +"""
+        }
+    };
+"""
+
+# Bn1d
+def to_Bn1d(name, dim=10, offset="(0,0,0)", to="(0,0,0)", width=1, height=1, depth=40, opacity=0.5, caption=" "):
+    return r"""
+\pic[shift={ """+ offset +""" }] at """+ to +""" 
+    {Box={
+        name="""+name+""",
+        caption="""+ caption +r""",
+        zlabel="""+ str(dim) +""",
+        fill=\BnColor,
+        opacity="""+ str(opacity) +""",
         height="""+ str(height) +""",
         width="""+ str(width) +""",
         depth="""+ str(depth) +"""
@@ -240,7 +330,7 @@ def to_connection(of, to, direction='lr'):
         return r"""
         \draw [connection]  (""" + of + """-east)    -- node {\midarrow} (""" + to + """-west);
         """
-    elif direction == 'lr':
+    elif direction == 'rl':
         return r"""
         \draw [connection]  (""" + of + """-west)    -- node {\midarrow} (""" + to + """-east);
         """

@@ -67,7 +67,8 @@ arch = [
     to_Pool(name='maxpool', offset='(1, 0, 0)', to='(res-east)', width=4, height=8, depth=8, caption='MaxPool'),
     to_UnPool(name='upsample', offset='(1, 0, 0)', to='(maxpool-east)', width=4, height=8, depth=8, caption='Up sampling'),
 
-    to_Feature(name='input', offset='(0, 0, 0)', to='(0, 0, 0)', s_filer=512, n_filer=3, width=0.5, height=64, depth=64, caption='Input'),
+    to_Feature2d(name='input', s_filer=512, n_filer=3, offset='(0, 0, 0)', to='(0, 0, 0)', width=0.5, height=64,
+                 depth=64, caption='Input'),
 
     # Shallow feature extraction
     to_ConvRelu(name='conv1', offset='(1, 0, 0)', to='(input-east)', s_filer=256, n_filer=64, width=1, height=32, depth=32),
@@ -107,7 +108,8 @@ arch = [
     to_Conv(name='conv3', offset='(1, 0, 0)', to='(conv2-east)', s_filer=128, n_filer=256, width=4, height=16,
                 depth=16),
     to_Sum(name='sum1', offset='(1, 0, 0)', to='(conv3-east)', radius=1.5),
-    to_Feature(name='feature', offset='(1, 0, 0)', to='(sum1-east)', s_filer=128, n_filer=256, width=4, height=16, depth=16, caption='Feature'),
+    to_Feature2d(name='feature', s_filer=128, n_filer=256, offset='(1, 0, 0)', to='(sum1-east)', width=4, height=16,
+                 depth=16, caption='Feature'),
 
     # Connection
     to_connection(of='input', to='conv1'),

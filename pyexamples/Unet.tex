@@ -5,12 +5,17 @@
 \usetikzlibrary{positioning}
 \usetikzlibrary{3d} %for including external image 
 
+\def\FeatureColor{rgb:green,4;black,5}
 \def\ConvColor{rgb:yellow,5;red,2.5;white,5}
+\def\FcColor{rgb:blue,5;red,2.5;white,5}
+\def\ReluColor{rgb:red,1;black,0.3}
+\def\BnColor{rgb:blue,2;green,1;black,0.3}
+\def\FcReluColor{rgb:blue,5;red,5;white,4}
 \def\ConvReluColor{rgb:yellow,5;red,5;white,5}
+\def\ConvResColor{rgb:magenta,4;black,5}
 \def\PoolColor{rgb:red,1;black,0.3}
 \def\UnpoolColor{rgb:blue,2;green,1;black,0.3}
-\def\FcColor{rgb:blue,5;red,2.5;white,5}
-\def\FcReluColor{rgb:blue,5;red,5;white,4}
+\def\SigmoidColor{rgb:magenta,5;black,7}   
 \def\SoftmaxColor{rgb:magenta,5;black,7}   
 \def\SumColor{rgb:blue,5;green,15}
 \def\ConcatColor{rgb:blue,5;red,2.5;white,5}
@@ -166,13 +171,12 @@
     };
 
 \pic[shift={ (0, 0, 0) }] at (conv_b4-east) 
-    {RightBandedBox={
+    {Box={
         name=ccr_res_b4,
         caption= ,
         xlabel={{ 512, }},
         zlabel=,
-        fill={rgb:white,1;black,3},
-        bandfill={rgb:white,1;black,2},
+        fill=\ConvResColor,
         opacity=0.5,
         height=16,
         width=6,
@@ -220,13 +224,12 @@
     };
 
 \pic[shift={ (0, 0, 0) }] at (conv_b3-east) 
-    {RightBandedBox={
+    {Box={
         name=ccr_res_b3,
         caption= ,
         xlabel={{ 256, }},
         zlabel=,
-        fill={rgb:white,1;black,3},
-        bandfill={rgb:white,1;black,2},
+        fill=\ConvResColor,
         opacity=0.5,
         height=25,
         width=4.5,
@@ -274,13 +277,12 @@
     };
 
 \pic[shift={ (0, 0, 0) }] at (conv_b2-east) 
-    {RightBandedBox={
+    {Box={
         name=ccr_res_b2,
         caption= ,
         xlabel={{ 128, }},
         zlabel=,
-        fill={rgb:white,1;black,3},
-        bandfill={rgb:white,1;black,2},
+        fill=\ConvResColor,
         opacity=0.5,
         height=32,
         width=3.5,
@@ -328,13 +330,12 @@
     };
 
 \pic[shift={ (0, 0, 0) }] at (conv_b1-east) 
-    {RightBandedBox={
+    {Box={
         name=ccr_res_b1,
         caption= ,
         xlabel={{ 64, }},
         zlabel=,
-        fill={rgb:white,1;black,3},
-        bandfill={rgb:white,1;black,2},
+        fill=\ConvResColor,
         opacity=0.5,
         height=40,
         width=2.5,

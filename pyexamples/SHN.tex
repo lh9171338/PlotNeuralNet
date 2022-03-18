@@ -7,12 +7,15 @@
 
 \def\FeatureColor{rgb:green,4;black,5}
 \def\ConvColor{rgb:yellow,5;red,2.5;white,5}
+\def\FcColor{rgb:blue,5;red,2.5;white,5}
+\def\ReluColor{rgb:red,1;black,0.3}
+\def\BnColor{rgb:blue,2;green,1;black,0.3}
+\def\FcReluColor{rgb:blue,5;red,5;white,4}
 \def\ConvReluColor{rgb:yellow,5;red,5;white,5}
 \def\ConvResColor{rgb:magenta,4;black,5}
 \def\PoolColor{rgb:red,1;black,0.3}
 \def\UnpoolColor{rgb:blue,2;green,1;black,0.3}
-\def\FcColor{rgb:blue,5;red,2.5;white,5}
-\def\FcReluColor{rgb:blue,5;red,5;white,4}
+\def\SigmoidColor{rgb:magenta,5;black,7}   
 \def\SoftmaxColor{rgb:magenta,5;black,7}   
 \def\SumColor{rgb:blue,5;green,15}
 \def\ConcatColor{rgb:blue,5;red,2.5;white,5}
@@ -79,7 +82,7 @@
     {Box={
         name=input,
         caption=Input,
-        xlabel={{3, }},
+        xlabel=3,
         zlabel=512,
         fill=\FeatureColor,
         height=64,
@@ -537,7 +540,7 @@
     {Box={
         name=feature,
         caption=Feature,
-        xlabel={{256, }},
+        xlabel=256,
         zlabel=128,
         fill=\FeatureColor,
         height=16,
